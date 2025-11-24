@@ -19,10 +19,10 @@ public class Member {
     private String name;
 
     @Column(length = 50, nullable = false, unique = true)
-    private String login_id;
+    private String loginId;
 
     @Column(length = 100, nullable = false)
-    private String login_pw;
+    private String loginPw;
 
     @Column(updatable = false, nullable = false)
     @CreationTimestamp
@@ -33,7 +33,7 @@ public class Member {
 
     public Member(String name, String login_id, String login_pw) {
         this.name = name;
-        this.login_id = login_id;
-        this.login_pw = login_pw;
+        this.loginId = login_id;
+        this.loginPw = login_pw;
     }
 }

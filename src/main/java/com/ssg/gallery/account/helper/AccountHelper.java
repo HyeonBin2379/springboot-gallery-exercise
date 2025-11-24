@@ -14,7 +14,7 @@ public interface AccountHelper {
     String login(AccountLoginRequests loginReq, HttpServletRequest request, HttpServletResponse response);
 
     // 회원 아이디 조회
-    Integer getMemberId(AccountLoginRequests loginReq);
+    Integer getMemberId(HttpServletRequest request);
 
     // 로그인 여부 확인
     Boolean isLoggedIn(HttpServletRequest request);

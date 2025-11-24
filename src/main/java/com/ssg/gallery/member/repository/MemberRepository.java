@@ -2,6 +2,7 @@ package com.ssg.gallery.member.repository;
 
 import com.ssg.gallery.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -11,5 +12,5 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     // null 처리를 위해 Optional 사용 -> 조회된 결과가 없는 경우도 안전하게 처리
     // 로그인 아이디, 패스워드로 회원 정보를 조회
-    Optional<Member> findByLoginIdAndLoginPw(String login_id, String login_pw);
+    Optional<Member> findByLoginIdAndLoginPw(String loginId, String loginPw);
 }
