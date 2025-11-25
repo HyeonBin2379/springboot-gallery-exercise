@@ -1,5 +1,6 @@
-package com.ssg.gallery.cart.entity;
+package com.ssg.gallery.cart.dto;
 
+import com.ssg.gallery.cart.entity.Cart;
 import lombok.Getter;
 
 @Getter

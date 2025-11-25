@@ -2,7 +2,7 @@ package com.ssg.gallery.cart.controller;
 
 import com.ssg.gallery.account.helper.AccountHelper;
 import com.ssg.gallery.cart.dto.CartRead;
-import com.ssg.gallery.cart.entity.CartRequest;
+import com.ssg.gallery.cart.dto.CartRequest;
 import com.ssg.gallery.cart.service.CartService;
 import com.ssg.gallery.item.dto.ItemRead;
 import com.ssg.gallery.item.service.ItemService;
