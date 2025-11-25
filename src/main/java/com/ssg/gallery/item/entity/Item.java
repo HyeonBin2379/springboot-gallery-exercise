@@ -7,20 +7,21 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-// 엔터티는 JPA 컨테이너에서 관리됨
+// 엔터티는 JPA 컨테이너에서 관리할 대상/테이블의 한 행에 대응되는 객체
 // 스프링 컨테이너에서는 JPA 컨테이너에서 엔터티를 꺼내서 사용
 @Getter
 @Entity
 @Table(name="items")    // 매핑된 데이터베이스 테이블(gallery 스키마의 item 테이블)을 지정
 public class Item {
     
-    // @Id: 테이블의 기본키 값을 저장하는 필드임을 명시 - 엔티티 생성 시 필수요소
+    // @Id: 테이블의 기본키 값을 저장하는 필드임을 명시 - 엔티티 생성 시 필수요소 - JPA에서 엔티티를 식별하기 위한 식별자
     // @Id가 붙은 필드는 테이블의 기본키 컬럼과 매핑됨
     // @GeneratedValue: 기본키값 부여 시 auto_increment를 적용 + 기본키 생성전략을 GenerationType.IDENTITY로 지정
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // @Column: 테이블의 한 속성에 매핑되는 필드
     @Column(length = 50, nullable = false)
     private String name;
 

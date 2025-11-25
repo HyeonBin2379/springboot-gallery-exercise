@@ -28,6 +28,7 @@ public class Member {
     @CreationTimestamp
     private LocalDateTime created;
 
+    //  생성자 추가
     public Member() {
     }
 
