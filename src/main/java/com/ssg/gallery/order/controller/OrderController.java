@@ -17,9 +17,12 @@ import java.util.List;
 @RequestMapping("/v1")
 public class OrderController {
 
+    // 주문 처리를 진행하려면 로그인한 사용자 아이디와 주문 서비스 로직이 필요
     private final AccountHelper accountHelper;
     private final OrderService orderService;
 
+    // 로그인한 사용자의 전체 주문 목록 조회
+    // 로그인한 사용자 아이디를 찾기 위한 세션 접근 필요
     @GetMapping("/api/orders")
     public ResponseEntity<?> readAll(HttpServletRequest req) {
         Integer memberId = accountHelper.getMemberId(req);
@@ -29,12 +32,15 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
+    // 로그인한 사용자의 특정 주문 내역 상세조회
+    // 로그인한 사용자 아이디를 찾기 위한 세션 접근 필요
     @GetMapping("/api/orders/{id}")
     public ResponseEntity<?> readAll(HttpServletRequest req, @PathVariable("id") Integer id) {
         Integer memberId = accountHelper.getMemberId(req);
 
         OrderRead order = orderService.find(id, memberId);
 
+        // 지정한 주문 내역을 찾을 수 없는 경우
         if (order == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -42,6 +48,9 @@ public class OrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
+    // 현재 로그인한 사용자의 주문 요청을 처리
+    // 로그인한 사용자 아이디를 찾기 위한 세션 접근 필요
+    // 사용자가 주문 폼에서 입력한 데이터 필요
     @PostMapping("/api/orders")
     public ResponseEntity<?> add(HttpServletRequest req, @RequestBody OrderRequest orderReq) {
         Integer memberId = accountHelper.getMemberId(req);

@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 
+    // 선택한 주문 내역의 주문 상품 목록 조회
     List<OrderItem> findAllByOrderId(Integer orderId);
 }

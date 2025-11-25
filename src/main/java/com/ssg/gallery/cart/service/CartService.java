@@ -15,5 +15,6 @@ public interface CartService {
 
     void remove(Integer memberId, Integer itemId);
 
+    // 장바구니 데이터 저장
     void save(Cart cart);
 }

@@ -13,18 +13,19 @@ public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id;         // 아이디
 
     @Column(nullable = false)
-    private Integer orderId;
+    private Integer orderId;    // 주문 아이디
 
     @Column(nullable = false)
-    private Integer itemId;
+    private Integer itemId;     //  주문할 상품 아이디
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
-    private LocalDateTime created;
+    private LocalDateTime created;  // 생성 일시
 
+    // 주문 상품 엔터티 생성
     public OrderItem() {
     }
 

@@ -23,6 +23,7 @@ public class CartController {
     private final ItemService itemService;
     private final AccountHelper accountHelper;
 
+    // 현재 로그인한 사용자의 장바구니 목록을 조회 -> 세션 조회 필수
     @GetMapping("/api/cart/items")
     public ResponseEntity<?> readAll(HttpServletRequest req) {
         Integer memberId = accountHelper.getMemberId(req);
@@ -34,6 +35,9 @@ public class CartController {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
+    // 현재 로그인한 회원의 장바구니에 상품 추가
+    // 로그인한 회원은 장바구니에 상품을 추가하기 위해 상품 아이디만을 전달하여 요청
+    // 세션에 저장된 로그인한 회원의 아이디를 불러와서 작업을 수행 
     @PostMapping("/api/carts")
     public ResponseEntity<?> push(HttpServletRequest req, @RequestBody CartRequest cartReq) {
         Integer memberId = accountHelper.getMemberId(req);
@@ -46,6 +50,8 @@ public class CartController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // 장바구니 목록에서 지정한 상품을 삭제
+    // 로그인한 사용자는 장바구니에서 삭제할 상품의 아이디를 url 주소에 포함시켜 전달
     @DeleteMapping("/api/cart/items/{itemId}")
     public ResponseEntity<?> remove(HttpServletRequest req, @PathVariable("itemId") Integer itemId) {
         Integer memberId = accountHelper.getMemberId(req);

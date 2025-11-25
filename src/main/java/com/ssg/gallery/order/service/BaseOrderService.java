@@ -24,6 +24,7 @@ public class BaseOrderService implements OrderService{
     private final ItemService itemService;
     private final CartService cartService;
 
+    // 현재 로그인한 사용자의 전체 주문 목록 조회
     @Override
     public List<OrderRead> findAll(Integer memberId) {
         return orderRepository.findAllByMemberIdOrderByIdDesc(memberId).stream()
@@ -31,6 +32,7 @@ public class BaseOrderService implements OrderService{
                 .toList();
     }
 
+    // 현재 로그인한 사용자의 특정 주문 상세 조회
     @Override
     public OrderRead find(Integer id, Integer memberId) {
         Optional<Order> orderOptional = orderRepository.findByIdAndMemberId(id, memberId);
@@ -48,22 +50,31 @@ public class BaseOrderService implements OrderService{
         return null;
     }
 
+    // 현재 로그인한 사용자의 주문 요청을 처리
+    // 주문한 상품의 총액 계산 + 주문한 상품을 주문 내용에 저장 + 주문 내용을 주문 목록에 저장
     @Override
     public void order(OrderRequest orderReq, Integer memberId) {
+        // 1. 주문 요청한 상품(들)을 조회
         List<ItemRead> items = itemService.findAll(orderReq.getItemIds());
+
+        // 2. 주문 내역에 포함된 상품들의 최종 결제 금액 계산 -> 주문 요청 DTO에 추가
         long amount = items.stream()
                 .map(item -> item.getPrice() - item.getPrice().longValue()*item.getDiscountPer()/100)
                 .reduce(0L, Long::sum);
         orderReq.setAmount(amount);
 
+        // 3. 새로운 주문 내역을 현재 사용자의 주문 목록에 추가
         Order order = orderRepository.save(orderReq.toEntity(memberId));
+
+        // 4. 주문 요청할 상품 목록을 주문 상품 목록에 추가
         List<OrderItem> newOrderItems = new ArrayList<>();
         orderReq.getItemIds().forEach((itemId) -> {
             OrderItem newOrderItem = new OrderItem(order.getId(), itemId);
             newOrderItems.add(newOrderItem);
         });
-
         orderItemService.saveAll(newOrderItems);
-        cartService.removeAll(order.getMemberId());
+
+        // 5. 현재 회원의 장바구니에서 주문 처리가 완료된 상품을 장바구니에서 삭제
+        newOrderItems.forEach(orderItem -> cartService.remove(order.getMemberId(), orderItem.getItemId()));
     }
 }
