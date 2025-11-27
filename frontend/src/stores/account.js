@@ -10,6 +10,8 @@ export const useAccountStore = defineStore(
         state: () => ({
             checked: false,
             loggedIn: false,
+            // ①  액세스 토큰 프로퍼티 문자열 타입
+            accessToken: "",
         }),
         actions: {
             // 로그인 관련 상태정보를 변경
@@ -21,5 +23,9 @@ export const useAccountStore = defineStore(
             setLoggedIn(val) {
                 this.loggedIn = val;
             },
+            // ② 액세스 토큰의 값 수정 메서드
+            setAccessToken(val) {
+                this.accessToken = val;
+            }
         }
     });

@@ -8,6 +8,7 @@ import com.ssg.gallery.order.dto.OrderRequest;
 import com.ssg.gallery.order.entity.Order;
 import com.ssg.gallery.order.entity.OrderItem;
 import com.ssg.gallery.order.repository.OrderRepository;
+import com.ssg.gallery.util.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,10 +64,15 @@ public class BaseOrderService implements OrderService{
                 .reduce(0L, Long::sum);
         orderReq.setAmount(amount);
 
-        // 3. 새로운 주문 내역을 현재 사용자의 주문 목록에 추가
+        // 3. 결제 수단이 카드일 때, 카드번호를 암호화하여 저장
+        if ("card".equals(orderReq.getPayment())) {
+            orderReq.setCardNumber(EncryptionUtils.encrypt(orderReq.getCardNumber()));
+        }
+
+        // 4. 새로운 주문 내역을 현재 사용자의 주문 목록에 추가
         Order order = orderRepository.save(orderReq.toEntity(memberId));
 
-        // 4. 주문 요청할 상품 목록을 주문 상품 목록에 추가
+        // 5. 주문 요청할 상품 목록을 주문 상품 목록에 추가
         List<OrderItem> newOrderItems = new ArrayList<>();
         orderReq.getItemIds().forEach((itemId) -> {
             OrderItem newOrderItem = new OrderItem(order.getId(), itemId);
@@ -74,7 +80,7 @@ public class BaseOrderService implements OrderService{
         });
         orderItemService.saveAll(newOrderItems);
 
-        // 5. 현재 회원의 장바구니에서 주문 처리가 완료된 상품을 장바구니에서 삭제
+        // 6. 현재 회원의 장바구니에서 주문 처리가 완료된 상품을 장바구니에서 삭제
         newOrderItems.forEach(orderItem -> cartService.remove(order.getMemberId(), orderItem.getItemId()));
     }
 }

@@ -4,6 +4,9 @@ import {reactive} from "vue";
 import {login} from "@/services/accountService";
 import {useRouter} from "vue-router";
 
+// ① 계정 스토어 객체 생성 시 필요한 메서드 임포트
+import {useAccountStore} from "@/stores/account";
+
 // 반응형 상태
 const state = reactive({ // ①
   form: {
@@ -15,12 +18,17 @@ const state = reactive({ // ①
 // 라우터 객체
 const router = useRouter(); // ②
 
+// ② 계정 스토어 객체
+const accountStore = useAccountStore();
+
 // 로그인 데이터 제출
 const submit = async () => { // ③
   const res = await login(state.form);
 
   switch (res.status) {
     case 200:
+      // ③ 로그인 성공시 응답받은 데이터(액세스 토큰)를 계정 스토어의 액세스 토큰에 입력(저장)
+      accountStore.setAccessToken(res.data);
       await router.push("/");
       break;
 
@@ -41,7 +49,7 @@ const submit = async () => { // ③
           <label for="loginId">이메일</label>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control" id="loginPw" placeholder="패스워드" v-model="state.form.loginPw"> <!-- ⑥ -->
+          <input type="password" class="form-control" id="loginPw" placeholder="패스워드" v-model="state.form.loginPw" autocomplete="false"> <!-- ⑥ -->
           <label for="loginPw">패스워드</label>
         </div>
         <button type="submit" class="w-100 h6 btn py-3 btn-primary">로그인</button> <!-- ⑦ -->

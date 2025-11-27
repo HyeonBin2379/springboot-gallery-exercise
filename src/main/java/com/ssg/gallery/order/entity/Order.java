@@ -28,7 +28,7 @@ public class Order {
     @Column(length = 10, nullable = false)
     private String payment;     // 결제 수단
 
-    @Column(length = 16)
+    @Column(length = 50)
     private String cardNumber;  // 카드 번호(계좌이체를 진행할 수 있으므로 null 허용)
 
     @Column(nullable = false)

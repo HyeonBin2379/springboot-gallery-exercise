@@ -14,6 +14,8 @@ const logoutAccount = async () => {
   const res = await logout();
 
   if (res.status === 200) {
+    // ① 로그 아웃을 위한 메서드 수정, 로그 아웃 성공시 계정 스토어의 액세스 토큰 값을 초기화하여 이후 HTTP 요청에서 토큰이 사용되지 않도록
+    accountStore.setAccessToken("");
     // 로그아웃 시 accountStore에 저장된 계정을 로그아웃 상태로 변경하고 홈 뷰로 라우팅
     accountStore.setLoggedIn(false);
     await router.push("/");
