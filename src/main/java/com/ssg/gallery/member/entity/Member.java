@@ -2,13 +2,15 @@ package com.ssg.gallery.member.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table
+@Table(name="members")
+@NoArgsConstructor
 public class Member {
 
     @Id
@@ -21,20 +23,20 @@ public class Member {
     @Column(length = 50, nullable = false, unique = true)
     private String loginId;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 64, nullable = false)
     private String loginPw;
+
+    @Column(length = 16, nullable = false)
+    private String loginPwSalt;
 
     @Column(updatable = false, nullable = false)
     @CreationTimestamp
     private LocalDateTime created;
 
-    //  생성자 추가
-    public Member() {
-    }
-
-    public Member(String name, String login_id, String login_pw) {
+    public Member(String name, String loginId, String loginPw, String loginPwSalt) {
         this.name = name;
-        this.loginId = login_id;
-        this.loginPw = login_pw;
+        this.loginId = loginId;
+        this.loginPw = loginPw;
+        this.loginPwSalt = loginPwSalt;
     }
 }

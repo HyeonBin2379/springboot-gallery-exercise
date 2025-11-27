@@ -33,7 +33,12 @@ create table members
     created  datetime     not null default current_timestamp()
 );
 
-insert into member (name, login_id, login_pw, created)
+# 비밀번호에 해싱을 적용하기 위한 속성 추가
+alter table members add login_pw_salt char(16) not null after login_pw;
+alter table members modify login_pw char(64) not null;
+desc members;
+
+insert into members (name, login_id, login_pw, created)
 values ('member1', 'member1@test.com', '1111', current_timestamp);
 
 commit;
