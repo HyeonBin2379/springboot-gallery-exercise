@@ -1,7 +1,7 @@
 <script setup>
 import {getItems} from "@/services/itemService";
 import {reactive} from "vue";
-import Card from "@/components/Card.vue";
+import Cart from "@/components/Cart.vue";
 
 // 반응형 상태
 const state = reactive({ // ① 반응형상태, 내부에 상품 목록을 저장할 items 배열, 해당 배열에 데이터가 추가되거나, 삭제되면 자동으로 UI에 반영된다.
@@ -34,7 +34,7 @@ const state = reactive({ // ① 반응형상태, 내부에 상품 목록을 저�
           <!-- ⑥ 상품 목록 출력-->
           <div class="col" v-for="item in state.items">
             <!-- ⑦ item 속성에 각 상품 데이터(item)을 입력해 전달-->
-            <Card :item="item"/>
+            <Cart :item="item"/>
           </div>
         </div>
       </div>
