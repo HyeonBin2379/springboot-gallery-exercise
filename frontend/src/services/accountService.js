@@ -19,5 +19,10 @@ export const check = () => {
 
 // 로그아웃: HTTP POST 메서드로 로그아웃 API를 호출하고 응답 결과를 리턴하는 기능
 export const logout = () => {
-    return httpRequester.post("/v1/api/account/logout").catch(e => e.response);
+    return httpRequester.post("/v1/api/account/logout")
+    .then((res) => {
+        alert("로그아웃 되었습니다.");
+        window.location.href = "/";
+    })
+    .catch(e => e.response);
 }

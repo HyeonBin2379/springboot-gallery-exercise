@@ -23,12 +23,14 @@ const accountStore = useAccountStore();
 
 // 로그인 데이터 제출
 const submit = async () => { // ③
-  const res = await login(state.form);
+  const params = new URLSearchParams();
+  params.append('loginId', state.form.loginId);
+  params.append('loginPw', state.form.loginPw);
+
+  const res = await login(params);
 
   switch (res.status) {
     case 200:
-      // ③ 로그인 성공시 응답받은 데이터(액세스 토큰)를 계정 스토어의 액세스 토큰에 입력(저장)
-      accountStore.setAccessToken(res.data);
       await router.push("/");
       break;
 
