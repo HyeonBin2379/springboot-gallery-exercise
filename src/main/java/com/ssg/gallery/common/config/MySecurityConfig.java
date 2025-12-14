@@ -1,37 +1,76 @@
 package com.ssg.gallery.common.config;
 
+import com.ssg.gallery.common.security.CustomAuthenticationProvider;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class MySecurityConfig {
 
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        // 웹 애플리케이션 실행 시 아래의 사용자 정보를 메모리에 저장
-        UserDetails user = User.withUsername("tester1")
-                .password("{noop}1111")
-                .authorities("ROLE_USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/v1/api/**").permitAll()
-                .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .authorizeHttpRequests(requests -> requests
+                .requestMatchers("/v1/api/**", "/index.html", "/").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(login -> login
+                    .loginProcessingUrl("/v1/api/account/login")
+                    .usernameParameter("loginId")
+                    .passwordParameter("loginPw")
+                    .successHandler((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.setContentType("application/json;charset=UTF-8");
+                    })
+                    .failureHandler((request, response, exception) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json;charset=UTF-8");
+                    })
+            )
+            .logout(logout -> logout
+                    .logoutUrl("/v1/api/account/logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessHandler((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    })
+            )
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                    })
+            )
+            .authenticationProvider(customAuthenticationProvider);
         SecurityFilterChain chain = http.build();
         chain.getFilters().forEach(System.out::println);
         return chain;
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vue URL
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

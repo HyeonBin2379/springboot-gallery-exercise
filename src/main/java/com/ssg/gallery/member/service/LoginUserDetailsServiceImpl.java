@@ -22,7 +22,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         System.out.println("로그인 시도: " + username);
         Optional<Member> loginMember = memberRepository.findByLoginId(username);
         return loginMember
-                .map(member -> new LoginUser(member.getLoginId(), member.getLoginPw(), Collections.emptyList()))
+                .map(member -> new LoginUser(member.getLoginId(), member.getLoginPw(), member.getLoginPwSalt(), member.getId(), Collections.emptyList()))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자명이 존재하지 않습니다."));
     }
 }
