@@ -18,9 +18,6 @@ const state = reactive({ // ①
 // 라우터 객체
 const router = useRouter(); // ②
 
-// ② 계정 스토어 객체
-const accountStore = useAccountStore();
-
 // 로그인 데이터 제출
 const submit = async () => { // ③
   const params = new URLSearchParams();

@@ -12,7 +12,6 @@ instance.interceptors.response.use((res) => {
 //   HTTP 상태 코드가 400(Bad Request: 잘못된 요청)이라면 오류 안내 창에 출력
 //                   401(Unauthorized: 권한 없음)이라면 안내 창 출력 후 메인페이지 이동
 //                   500(Internal Server Error: 서버 내부 오류) 오류 안내 창 출력
-
     return res;
 }, async (err) => {
     switch (err.response.status) {

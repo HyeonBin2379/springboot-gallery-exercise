@@ -24,6 +24,7 @@ public class MySecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+            // localhost:5173에서 localhost:8080으로 요청을 보내기 위해 필요한 설정
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(requests -> requests
                 .requestMatchers("/v1/api/**", "/index.html", "/").permitAll()
