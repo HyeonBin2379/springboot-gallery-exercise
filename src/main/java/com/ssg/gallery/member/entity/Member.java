@@ -1,6 +1,7 @@
 package com.ssg.gallery.member.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +27,7 @@ public class Member {
     @Column(length = 64, nullable = false)
     private String loginPw;
 
-    @Column(length = 16, nullable = false)
+    @Column(length = 16)
     private String loginPwSalt;
 
     @Column(updatable = false, nullable = false)
@@ -38,5 +39,10 @@ public class Member {
         this.loginId = loginId;
         this.loginPw = loginPw;
         this.loginPwSalt = loginPwSalt;
+    }
+
+    public void migratePwd(String newBcryptPwd) {
+        this.loginPw = newBcryptPwd;
+        this.loginPwSalt = null;
     }
 }
